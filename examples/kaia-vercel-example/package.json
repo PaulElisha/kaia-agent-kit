@@ -1,0 +1,45 @@
+{
+  "name": "ai-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^1.1.17",
+    "@ai-sdk/react": "^1.1.18",
+    "@ethersproject/abi": "^5.8.0",
+    "@ethersproject/address": "^5.8.0",
+    "@ethersproject/units": "^5.8.0",
+    "@goat-sdk/adapter-vercel-ai": "^0.2.8",
+    "@goat-sdk/core": "^0.4.7",
+    "@goat-sdk/plugin-erc20": "^0.2.10",
+    "@goat-sdk/wallet-evm": "^0.2.8",
+    "@goat-sdk/wallet-viem": "^0.2.8",
+    "@kaiachain/ethers-ext": "^2.0.3",
+    "@kaiachain/kaia-agent-kit": "^0.0.16",
+    "ai": "^4.1.46",
+    "assert": "^2.1.0",
+    "axios": "^1.8.1",
+    "dotenv": "^16.4.7",
+    "next": "15.1.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "viem": "^2.24.3",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.7",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}

@@ -6,11 +6,10 @@ import { queryGql } from "../utils/gql";
 
 export const getPositionValue = async (parameters: any, config: any) => {
   try {
-    let { KAIA_KAIASCAN_API_KEY, network } = config;
+    let { network } = config;
     let { positionId } = parameters;
     network = network ? network.toLowerCase() : "kairos";
 
-    validations.checkApiKey(KAIA_KAIASCAN_API_KEY);
     validations.checkNetwork(network);
 
     const positionQuery = `

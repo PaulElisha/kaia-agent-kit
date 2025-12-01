@@ -11,14 +11,19 @@ export const getPositionValue = async (parameters: any, config: any) => {
     network = network ? network.toLowerCase() : "kairos";
 
     validations.checkNetwork(network);
+    const Q96 = BigInt(2 ** 96);
 
     const positionQuery = `
       query PositionDetails($positionId: String!) {
         positions(where: {id: $positionId}) {
           id
           liquidity
-          tickLower
-          tickUpper
+          tickLower {
+            tickIdx
+          }
+          tickUpper {
+            tickIdx
+          }
           pool {
             token0 {
               symbol
@@ -27,7 +32,7 @@ export const getPositionValue = async (parameters: any, config: any) => {
             }
             token1 {
               symbol
-              decimals
+              decimalset
               derivedETH
             }
             tick
@@ -41,10 +46,6 @@ export const getPositionValue = async (parameters: any, config: any) => {
 
     const data = await queryGql(positionQuery, { positionId }, network);
 
-    if (data.errors || !data.data.positions.length) {
-      throw new Error("Position not found");
-    }
-
     const position = data.data.positions[0];
     const ethPriceUSD = parseFloat(data.data.bundle.ethPriceUSD);
 
@@ -55,10 +56,14 @@ export const getPositionValue = async (parameters: any, config: any) => {
       TickMath.getSqrtRatioAtTick(currentTick).toString()
     );
     const sqrtRatioLower = BigInt(
-      TickMath.getSqrtRatioAtTick(parseInt(position.tickLower)).toString()
+      TickMath.getSqrtRatioAtTick(
+        parseInt(position.tickLower.tickIdx)
+      ).toString()
     );
     const sqrtRatioUpper = BigInt(
-      TickMath.getSqrtRatioAtTick(parseInt(position.tickUpper)).toString()
+      TickMath.getSqrtRatioAtTick(
+        parseInt(position.tickUpper.tickIdx)
+      ).toString()
     );
 
     let amount0 = BigInt(0);
@@ -66,15 +71,15 @@ export const getPositionValue = async (parameters: any, config: any) => {
 
     if (sqrtRatioCurrent <= sqrtRatioLower) {
       amount0 =
-        (liquidity * (sqrtRatioUpper - sqrtRatioLower)) /
+        (liquidity * (sqrtRatioUpper - sqrtRatioLower) * Q96) /
         (sqrtRatioUpper * sqrtRatioLower);
     } else if (sqrtRatioCurrent < sqrtRatioUpper) {
       amount0 =
-        (liquidity * (sqrtRatioUpper - sqrtRatioCurrent)) /
+        (liquidity * (sqrtRatioUpper - sqrtRatioCurrent) * Q96) /
         (sqrtRatioUpper * sqrtRatioCurrent);
-      amount1 = liquidity * (sqrtRatioCurrent - sqrtRatioLower);
+      amount1 = (liquidity * (sqrtRatioCurrent - sqrtRatioLower)) / Q96;
     } else {
-      amount1 = liquidity * (sqrtRatioUpper - sqrtRatioLower);
+      amount1 = (liquidity * (sqrtRatioUpper - sqrtRatioLower)) / Q96;
     }
 
     const token0Decimals = parseInt(position.pool.token0.decimals);

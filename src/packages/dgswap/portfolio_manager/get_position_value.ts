@@ -39,7 +39,7 @@ export const getPositionValue = async (parameters: any, config: any) => {
       }
     `;
 
-    const data = await queryGql(positionQuery, { positionId });
+    const data = await queryGql(positionQuery, { positionId }, network);
 
     if (data.errors || !data.data.positions.length) {
       throw new Error("Position not found");

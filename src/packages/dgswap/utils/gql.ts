@@ -1,7 +1,6 @@
 /** @format */
 
-const endpoint =
-  "https://thegraph.com/explorer/api/playground/QmPxcJiVTvEJST2tEeeGUWTfcHZFus9o7MZQyUxTJyFfzs";
+import { API_DEFAULTS } from "../../../utils/constants";
 export type populatedGqlParams = [string, object];
 export type gqlParams = {
   count: number;
@@ -10,8 +9,10 @@ export type gqlParams = {
 };
 export const queryGql = async (
   query: populatedGqlParams[0],
-  variables: populatedGqlParams[1]
+  variables: populatedGqlParams[1],
+  network?: string
 ) => {
+  const endpoint = API_DEFAULTS.DGSWAP_SUBGRAPH_URL[network || "kairos"];
   const res = await fetch(endpoint, {
     method: "POST",
     headers: {
